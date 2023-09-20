@@ -20,7 +20,7 @@ class CAInpainter(torch.nn.Module):
         # self.dummy_trainer = DummyTrainer(config=self.config,cuda=cuda,device_ids=device_ids)
         # self.dummy_trainer.load_state_dict(torch.load(os.path.join(myDir,f"{myDir}/torch_model.pt")))
         self.netG = Generator(config['netG'], cuda, device_ids)
-        netG.load_state_dict(torch.load(os.path.join(myDir,f"{myDir}/torch_model.pt")))
+        netG.load_state_dict(torch.load(os.path.join(myDir,f"{myDir}/hole_benchmark/gen_00430000.pt")))
         self.netG.eval()
 
         #=============================================================================
