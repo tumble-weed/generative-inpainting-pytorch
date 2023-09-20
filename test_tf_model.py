@@ -38,6 +38,7 @@ def main():
 
     x = (image / 127.5 - 1) * (1 - mask).cuda()
     with torch.no_grad():
+        import ipdb;ipdb.set_trace()
         _, result, _ = trainer.netG(x, mask)
 
     imageio.imwrite(args.output, upcast(result[0].permute(1, 2, 0).detach().cpu().numpy()))

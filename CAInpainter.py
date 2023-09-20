@@ -51,6 +51,7 @@ class CAInpainter(torch.nn.Module):
             x = image * (1-mask)
 
         with torch.no_grad():
+            import ipdb;ipdb.set_trace()
             stage1_result, result, offset_flow = self.netG(x, mask)  
         
         # import ipdb;ipdb.set_trace()
@@ -107,7 +108,7 @@ class CAInpainter(torch.nn.Module):
             '''
         #https://github.com/tumble-weed/generative-inpainting-pytorch/blob/050ec08eacde19290255eff37ea686063c782a4c/test_tf_model.py#L37
         # mask in 0-1
-
+        # mask of area to be filled is white
         pth_img = self.forward((image*2 - 1),1-mask)
         
         assert pth_img.max() <= 1
