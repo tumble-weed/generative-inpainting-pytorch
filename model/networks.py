@@ -6,7 +6,7 @@ from torch.nn.utils import weight_norm as weight_norm_fn
 from PIL import Image
 from torchvision import transforms
 from torchvision import utils as vutils
-
+import dutils
 from utils.tools import extract_image_patches, flow_to_image, \
     reduce_mean, reduce_sum, default_loader, same_padding
 
@@ -24,7 +24,34 @@ class Generator(nn.Module):
 
     def forward(self, x, mask):
         x_stage1 = self.coarse_generator(x, mask)
+        #=============================================
+        """
+        noisy_mask = torch.bernoulli(torch.full_like(mask, 0.9))
+        noisy_mask = noisy_mask * mask
+        noisy_mask = mask
+        noisy_x = (x + 0.01*torch.randn(x.shape,device=x.device)).clip(-1,1)
+        noisy_x = noisy_x*(mask) + x*(1-mask)
+        '''
+        noisy_x = noisy_x*(mask)*(1-noisy_mask) + x*(noisy_mask) + x*(1-mask)
+        '''      
+        noisy_x_stage1 = self.coarse_generator(noisy_x, noisy_mask)
+        # dutils.img_save((noisy_x_stage1+1)/2,'noisy_stage1.png')
+        dutils.img_save((noisy_x+1)/2,'noisy_x.png')
+        dutils.img_save((noisy_mask+1)/2,'noisy_mask.png')
+        dutils.img_save((noisy_x_stage1+1)/2,'noisy_stage1.png',use_matplotlib=False)
+        dutils.img_save((x_stage1+1)/2,'stage1.png',use_matplotlib=False)
+        """
+        #=============================================
         x_stage2, offset_flow = self.fine_generator(x, x_stage1, mask)
+        #=============================================
+        """
+        noisy_x_stage2, offset_flow = self.fine_generator(x, noisy_x_stage1, mask)
+        dutils.img_save((noisy_x_stage2+1)/2,'noisy_stage2.png',use_matplotlib=False)
+        dutils.img_save((x_stage2+1)/2,'stage2.png',use_matplotlib=False)
+        """
+        #=============================================
+        import ipdb;ipdb.set_trace()
+
         return x_stage1, x_stage2, offset_flow
 
 
