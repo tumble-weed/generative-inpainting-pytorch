@@ -19,8 +19,8 @@ class CAInpainter(torch.nn.Module):
         self.config = get_config(f'{myDir}/configs/config.yaml')
         # self.dummy_trainer = DummyTrainer(config=self.config,cuda=cuda,device_ids=device_ids)
         # self.dummy_trainer.load_state_dict(torch.load(os.path.join(myDir,f"{myDir}/torch_model.pt")))
-        self.netG = Generator(config['netG'], cuda, device_ids)
-        netG.load_state_dict(torch.load(os.path.join(myDir,f"{myDir}/hole_benchmark/gen_00430000.pt")))
+        self.netG = Generator(self.config['netG'], cuda, device_ids)
+        self.netG.load_state_dict(torch.load(os.path.join(myDir,f"{myDir}/hole_benchmark/gen_00430000.pt")))
         self.netG.eval()
 
         #=============================================================================
@@ -48,7 +48,7 @@ class CAInpainter(torch.nn.Module):
             x = image * (1-mask)
 
         with torch.no_grad():
-            import ipdb;ipdb.set_trace()
+            # import ipdb;ipdb.set_trace()
             stage1_result, result, offset_flow = self.netG(x, mask)  
         
         # import ipdb;ipdb.set_trace()
